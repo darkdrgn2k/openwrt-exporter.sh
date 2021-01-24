@@ -3,7 +3,7 @@ printf "Content-type: text/html\n\n"
 
 echo "node_uname_info{domainname=\"(none)\",machine=\"$(uname -m)\",nodename=\"$(uci get system.@system[0].hostname)\",release=\"$(uname -r)\",sysname=\"Linux\",version=\"$(uname -v)\"} 1"
 
-IFS='\n';
+IFS=$'\n';
 for tbl in $( cat /proc/stat  | grep cpu | grep -v cpu\ )
 do
    cpu=$(echo $tbl | awk '{print $1}' | sed s/cpu//)
@@ -16,6 +16,13 @@ do
    echo "node_cpu_seconds_total{cpu=\"$cpu\",mode=\"softirq\"} $(echo $tbl | awk '{print $8}')"
 done
 IFS=" ";
+
+IFS=$'\n';
+for tbl in $( cat /proc/meminfo )
+do
+   echo "node_memory_$(echo $tbl | awk -F ":" '{print $1}')_bytes $(($(echo $tbl | awk -F ":" '{print $2}' | awk '{print $1}')*100))"
+done
+IFS=' ';
 
 for net in /sys/class/net/*; do
    int="$(basename "$net")"
@@ -50,4 +57,3 @@ for net in /sys/class/net/*; do
 done
 cat /proc/loadavg | awk '{print "node_load1 "$1"\nnode_load5 "$2"\nnode_load15 "$3}'
 cat /proc/uptime | awk '{print "node_boot_time_seconds "$1}'
-
