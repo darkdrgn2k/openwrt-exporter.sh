@@ -20,7 +20,7 @@ IFS=" ";
 IFS=$'\n';
 for tbl in $( cat /proc/meminfo )
 do
-   echo "node_memory_$(echo $tbl | awk -F ":" '{print $1}')_bytes $(($(echo $tbl | awk -F ":" '{print $2}' | awk '{print $1}')*100))"
+   echo "node_memory_$(echo $tbl | awk -F ":" '{print $1}' | tr \( _ | tr -d \) )_bytes $(($(echo $tbl | awk -F ":" '{print $2}' | awk '{print $1}')*100))"
 done
 IFS=' ';
 
