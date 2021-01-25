@@ -34,9 +34,9 @@ do
     MOUNT=$(echo $tbl | awk '{print $7}');
     FS=$(echo $tbl | awk '{print $2}');
     DEV=$(echo $tbl | awk '{print $1}');
-    echo "node_filesystem_size_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $BYTES";
-    echo "node_filesystem_avail_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $((BYTES - USED))";
-    echo "node_filesystem_free_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $((BYTES - USED))";
+    echo "node_filesystem_size_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $((BYTES * 1024))";
+    echo "node_filesystem_avail_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $(((BYTES - USED) * 1024))";
+    echo "node_filesystem_free_bytes{device=\"$DEV\",fstype=\"$FS\",mountpoint=\"$MOUNT\"} $(((BYTES - USED) * 1024))";
 done
 IFS=' '
 
